@@ -2,7 +2,7 @@ name: Send Feishu Message on Push
 on:
   push:
     branches:
-      - main  # 替换为你的分支名（如main、master）
+      - master
 
 jobs:
   send-message:
