@@ -1,0 +1,36 @@
+name: Send Feishu Message on Push
+on:
+  push:
+    branches:
+      - main  # 替换为你的分支名（如main、master）
+
+jobs:
+  send-message:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Send Feishu Message
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const webhookUrl = 'https://open.feishu.cn/open-apis/bot/v2/hook/c33c7634-0cd6-4567-aa1d-48b11e172850'; // 替换为你的Webhook URL
+            const commitMessage = github.event.head_commit.message;
+            const repoName = github.event.repository.name;
+            const branch = github.event.ref.replace('refs/heads/', '');
+            
+            const message = {
+              msg_type: 'text',
+              content: {
+                text: `@家庭教育选题素材库 GitHub仓库 ${repoName} 在分支 ${branch} 有新的提交：${commitMessage}`
+              }
+            };
+            
+            await fetch(webhookUrl, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(message)
+            });
